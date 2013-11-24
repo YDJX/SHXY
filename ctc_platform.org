@@ -1,0 +1,102 @@
+* DONE checkout code 取出代码
+  - State "DONE"       from ""           [2013-11-21 周四 13:06]
+    
+svn路径 svn://58.250.56.113/PLATFORM/system/CTC\_USER \\
+           svn://58.250.56.113/CART/system/CTC\_CART \\
+现在部署在服务器192.168.1.22上，可以修改host非配域名
+| 192.168.1.22 user.hunan.ctc    |
+| 192.168.1.22 trade.hunan.ctc   |
+| 192.168.1.22  meixun.hunan.ctc |
+访问地址[[http://user.hunan.ctc:8000]]，
+* DOING 环境搭建
+  - State "DOING"      from ""           [2013-11-21 周四 13:06]
+  Eclipse 版本4.2(Juno) \\
+  Jdk 1.6+  安装的1.7 \\
+  tomcat 6+ 安装的tomcat7 \\
+  mysql数据库 版本5.1.22 安装的5.55 \\
+** DONE Jdk安装
+   - State "DONE"       from ""           [2013-11-21 周四 13:07]
+  官方网站下载安装包，双击安装，选择安装路径，建议不要在路径中有中文和空格。
+  配置环境变量:\\
+set JAVA\_HOME=安装路径  \\
+set CLASSPATH=库路径  \\
+set Path=运行路径 \\
+** DONE tomcat安装
+   - State "DONE"       from ""           [2013-11-21 周四 13:07]
+
+  到apache官方网站下载tomcat7，安装
+** DONE mysql安装
+   - State "DONE"       from ""           [2013-11-21 周四 13:07]
+
+  官方网站下载mysql安装包，安装
+** DONE Eclipse安装
+   - State "DONE"       from ""           [2013-11-21 周四 13:07]
+  到[[http://www.eclipse.org/downloads/download.php?file=/technology/epp/downloads/release/juno/SR2/eclipse-jee-juno-SR2-win32.zip][Eclipse Juno]] 下载压缩包，解压到指定目录
+  Kepler版本的就不用自己下载安装svn插件和m2e插件了。
+如果有问题参考[[http://www.eclipse.org/subversive/installation-instructions.php#phase2]] 解决办法
+
+*** DONE 安装svn插件
+    - State "DONE"       from ""           [2013-11-21 周四 13:49]
+   help->Eclipse Marketplace->Search  输入‘svn’ 回车。Subversive和Subclipse都可以，安装了Subversive，next accept restart
+  启动后，右键import能够找到SVN就证明可以使用了。 \\
+  第一次使用一个会让选择如何连接，选一个就可以了，不知道选哪个就选第一个吧！如果像我一样悲催的在第一次check时候弹出了没有连接到网络就需要手动去选择连接了，Window->Preferences->Team->SVN->SVN Connector.设置好后，输入项目svn的路径，一路下去check出代码。
+[[http://www.polarion.com/products/svn/subversive/download.php][Subversive]] 
+[[http://subclipse.tigris.org/servlets/ProjectProcess;jsessionid=B050420CD39DD0D1D67D341A2F920398?pageID=p4wYuA][Subclipse]] 
+这两个是可以找到插件的地址
+[[http://community.polarion.com/projects/subversive/download/eclipse/3.0/update-site/ ][connector]] 选择install 添加安装connector
+  Subversive分成了两部分发布，一部分插件，一部分链接，因为license的原因，所以connector需要分出来
+
+*** DONE 安装m2e插件
+    - State "DONE"       from ""           [2013-11-21 周四 13:58]
+   help->Eclipse Marketplace->Search 输入‘m2eclipse’回车。Maven Integration for Eclipse WTP(Juno) 和Maven Integration for Eclipse WTP(Juno or newer)，我选择后面的(因为图标和仓库的那个图片是一致的) next accept restart
+  启动后，右键import能够找到Maven就基本安装完毕了。
+* DONE compile编译文件
+  - State "DONE"       from ""           [2013-11-21 周四 13:58]
+** DONE 安装maven
+   - State "DONE"       from ""           [2013-11-21 周四 13:58]
+  下载apache maven 3.0.4。\\
+mvn -version \\
+mvn help:system \\
+mvn clean install  个人认为生命周期设置为package就可以了 因为其他地方不调用。
+*** 第一次编译时候会比较久，需要从中央仓库下载jar包，如果网络不好，可能会出现超时编译失败。
+** DONE 安装apache cxf 2.7.1
+   - State "DONE"       from ""           [2013-11-21 周四 13:59]
+可以配置环境变量。 编译时候应该会用到，如CTC\_USER的build.properties需要修改配置cxf的路径。
+** jdk1.6+ 最好1.7
+
+1.6会有webservice的问题，需要弄jar包或者重新生成代码,此说明在CTC\_CART的webservice代码的注释中也有说明，我测试过，但是应该是路径写的有出入，虽然生成了代码，但路径位置不对。应该是我命令参数传的不对
+** DONE mysql数据库 5.1.22 UTF-8
+   - State "DONE"       from ""           [2013-11-21 周四 13:59]
+驱动是5.1 实际使用的数据库是192.168.1.22服务器上的数据库。22上原来的是ctc\_user，现在多加了一个ctc\_user\_229
+** DONE check下来的代码
+   - State "DONE"       from "DOING"      [2013-11-22 周五 09:09]
+   - State "DOING"      from ""           [2013-11-21 周四 13:59]
+
+  调整mysql数据库的链接，修改build path库。如果提示run target XX not found 就到项目的.setting文件夹下吧org.eclipse.wst.common.project.facet.core.xml 文件中配置的 run server什么的都去掉，只留facts就可以了. \\
+CTC\_CART、CTC\_USER都显示小红叉，主要是因为jsp和javascript的原因，如果java代码有红叉，就证明配置或者哪里有问题。CTC\_CART的红叉是因为maven配置的servlet-api.jar和jsp-api.jar在显示时候没有使用(这里我也不是很确定)，但可以确定的是不加也是没有问题的，额外再加可以去掉显示的小红叉。 \\
+
+* DOING 部署
+  - State "DOING"      from "TODO"       [2013-11-22 周五 09:24]
+
+打包原来部署的文件，比较有哪些不同，哪些文件是新生成的
+** 安装tomcat
+
+将tomcat包上传解压，我又对比了原来22上面的部署，是将USER和CART分开的，使用的是两个不同的端口。所以在192.168.1.229上也部署了两个tomcat，USER使用8000端口，发布路径指向了webs。CART使用了8088端口，发布路径指向了webss。比较偷懒的做法，把22上面的tomcat配置apache-tomcat/conf/server.xml拿下来后，修改下再传到229上就可以了。\\
+192.168.1.22上的tomcat分别是 apache-tomcat-user-7.0.* apache-tomcat-cart-7.0.*。 \\
+还要对比修改不同的配置文件: \\
+#+CTC\_USER:
+CTC\_USER
+1. app.properties 
+2. eas.properties :: 账户密码不一样
+3. hosts.properties :: 数量和个别的值不一样
+4. sqlResource.properties ::数据库配置不一样
+5. vod.properties :: ftp的账号密码等不一样
+
+#+CTC\_CART:
+CTC\_CART
+1. eas.properties :: 账户密码不一样
+2. hosts.properties :: 端口 域名配置不一样
+3. sqlResource.properties :: 数据库配置不一样
+#+BEGIN_SRC java -n -h 7 -w 40
+
+#+END_SRC
