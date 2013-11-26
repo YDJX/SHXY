@@ -1,0 +1,29 @@
+<html>
+
+<head> <meta http-equiv="Content-Type" content="text/html; charset=gb2312"> <meta name="GENERATOR" content="Microsoft FrontPage 4.0"> <meta name="ProgId" content="FrontPage.Editor.Document"> <title>有关正则表达式 1</title> </head>
+
+<body> <script> function regInput(obj, reg, inputStr) { var docSel = document.selection.createRange() if (docSel.parentElement().tagName != "INPUT") return false oSel = docSel.duplicate() oSel.text = "" var srcRange = obj.createTextRange() oSel.setEndPoint("StartToStart", srcRange) var str = oSel.text + inputStr + srcRange.text.substr(oSel.text.length) return reg.test(str) } </script>
+
+小写英文：<xmp style= "display:inline"> </xmp> <input onkeypress = "return regInput(this, /^[a-z]*$/,String.fromCharCode(event.keyCode))" onpaste= "return regInput(this, /^[a-z]*$/, window.clipboardData.getData('Text'))" ondrop= "return regInput(this, /^[a-z]*$/, event.dataTransfer.getData('Text'))" style="ime-mode:Disabled" ><br>
+
+大写英文：<xmp style= "display:inline"> </xmp> <input onkeypress = "return regInput(this, /^[A-Z]*$/, String.fromCharCode(event.keyCode))" onpaste= "return regInput(this, /^[A-Z]*$/, window.clipboardData.getData('Text'))" ondrop= "return regInput(this, /^[A-Z]*$/, event.dataTransfer.getData('Text'))" style="ime-mode:Disabled"> <br>
+
+任意数字：<xmp style="display:inline"> </xmp> <input onkeypress = "return regInput(this, /^[0-9]*$/, String.fromCharCode(event.keyCode))" onpaste= "return regInput(this, /^[0-9]*$/, window.clipboardData.getData('Text'))" ondrop= "return regInput(this, /^[0-9]*$/, event.dataTransfer.getData('Text'))" style="ime-mode:Disabled" ><br>
+
+限2位小数：<xmp style="display:inline"> </xmp> <input onkeypress = "return regInput(this, /^\d*\.?\d{0,2}$/, String.fromCharCode(event.keyCode))" onpaste= "return regInput(this, /^\d*\.?\d{0,2}$/, window.clipboardData.getData('Text'))" ondrop= "return regInput(this, /^\d*\.?\d{0,2}$/, event.dataTransfer.getData('Text'))" style="ime-mode:Disabled" > 如: 123.12<br>
+
+日　 期：<xmp style="display:inline"> </xmp> <input onkeypress = "return regInput(this, /^\d{1,4}([-\/](\d{1,2}([-\/](\d{1,2})?)?)?)?$/, String.fromCharCode(event.keyCode))" onpaste= "return regInput(this, /^\d{1,4}([-\/](\d{1,2}([-\/](\d{1,2})?)?)?)?$/, window.clipboardData.getData('Text'))" ondrop= "return regInput(this, /^\d{1,4}([-\/](\d{1,2}([-\/](\d{1,2})?)?)?)?$/, event.dataTransfer.getData('Text'))" style="ime-mode:Disabled" > 如: 2002-9-29<br>
+
+任意中文：<xmp style="display:inline"> </xmp> <input onkeypress= "return regInput(this, /^$/, String.fromCharCode(event.keyCode))" onpaste= "return regInput(this, /^[\u4E00-\u9FA5]*$/, window.clipboardData.getData('Text'))" ondrop= "return regInput(this, /^[\u4E00-\u9FA5]*$/, event.dataTransfer.getData('Text'))" ><br>
+
+部分英文：<xmp style="display:inline"> </xmp> <input onkeypress= "return regInput(this, /^[a-e]*$/, String.fromCharCode(event.keyCode))" onpaste= "return regInput(this, /^[a-e]*$/, window.clipboardData.getData('Text'))" ondrop= "return regInput(this, /^[a-e]*$/, event.dataTransfer.getData('Text'))" style="ime-mode:Disabled" > 范围: a,b,c,d,e<br>
+
+部分中文：<xmp style="display:inline"> </xmp>
+
+<script language=javascript> function checkChinese(oldLength, obj) { var oTR = window.document.selection.createRange() var reg = /[^一二三四五六七八九十]/g oTR.moveStart("character", -1*(obj.value.length-oldLength)) oTR.text = oTR.text.replace(reg, "") } </script> <input onkeypress="return false" onkeydown="setTimeout('checkChinese('+this.value.length+','+this.uniqueID+')', 1)" onpaste= "return regInput(this, /^[一二三四五六七八九十]*$/, window.clipboardData.getData('Text'))" ondrop= "return regInput(this, /^[一二三四五六七八九十]*$/, event.dataTransfer.getData('Text'))" > 范围: 一二三四五六七八九十<br> <p><p><p><P><P><P><P><P> <hr> <FORM METHOD=POST ACTION=""> 有关正则表达式 <br> 1.只能输入数字和英文的： <input onkeyup="value=value.replace(/[\W]/g,'')" onbeforepaste="clipboardData.setData('text',clipboardData.getData('text').replace(/[^\d]/g,''))"><br> 2.只能输入数字的： <input onkeyup="value=value.replace(/[^\d]/g,'')" onbeforepaste="clipboardData.setData('text',clipboardData.getData('text').replace(/[^\d]/g,''))"><br> 3.只能输入全角的： <input onkeyup="value=value.replace(/[^\uFF00-\uFFFF]/g,'')" onbeforepaste="clipboardData.setData('text',clipboardData.getData('text').replace(/[^\uFF00-\uFFFF]/g,''))"><br> 4.只能输入汉字的： <input onkeyup="value=value.replace(/[ -~]/g,'')" onbeforepaste="clipboardData.setData('text',clipboardData.getData('text').replace(/[^\u4E00-\u9FA5]/g,''))"><br> <INPUT TYPE="submit"> </FORM>
+
+<p>&quot;^\\d+$&quot;　　//非负整数（正整数 + 0）<br> &quot;^[0-9]*[1-9][0-9]*$&quot;　　//正整数<br> &quot;^((-\\d+)|(0+))$&quot;　　//非正整数（负整数 + 0）<br> &quot;^-[0-9]*[1-9][0-9]*$&quot;　　//负整数<br> &quot;^-?\\d+$&quot;　　　　//整数<br> &quot;^\\d+(\\.\\d+)?$&quot;　　//非负浮点数（正浮点数 + 0）<br> &quot;^(([0-9]+\\.[0-9]*[1-9][0-9]*)|([0-9]*[1-9][0-9]*\\.[0-9]+)|([0-9]*[1-9][0-9]*))$&quot;　　//正浮点数<br> &quot;^((-\\d+(\\.\\d+)?)|(0+(\\.0+)?))$&quot;　　//非正浮点数（负浮点数 + 0）<br> &quot;^(-(([0-9]+\\.[0-9]*[1-9][0-9]*)|([0-9]*[1-9][0-9]*\\.[0-9]+)|([0-9]*[1-9][0-9]*)))$&quot;　　//负浮点数<br> &quot;^(-?\\d+)(\\.\\d+)?$&quot;　　//浮点数<br> &quot;^[A-Za-z]+$&quot;　　//由26个英文字母组成的字符串<br> &quot;^[A-Z]+$&quot;　　//由26个英文字母的大写组成的字符串<br> &quot;^[a-z]+$&quot;　　//由26个英文字母的小写组成的字符串<br> &quot;^[A-Za-z0-9]+$&quot;　　//由数字和26个英文字母组成的字符串<br> &quot;^\\w+$&quot;　　//由数字、26个英文字母或者下划线组成的字符串<br> &quot;^[\\w-]+(\\.[\\w-]+)*@[\\w-]+(\\.[\\w-]+)+$&quot;　　　　//email地址<br> &quot;^[a-zA-z]+://(\\w+(-\\w+)*)(\\.(\\w+(-\\w+)*))*(\\?\\S*)?$&quot;　　//url</p>
+
+</body>
+
+</html> 
